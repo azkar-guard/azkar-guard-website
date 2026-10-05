@@ -1,0 +1,178 @@
+/* Web app shell: header, settings page and install card. Shared checklist styles are in base.css. */
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  /* Keep content clear of the notch and home indicator when installed. */
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(3rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand img {
+  border-radius: 6px;
+}
+
+.arabic {
+  font-size: 1.55rem;
+}
+
+/* Bigger tap targets on phones. */
+.dhikr-button {
+  touch-action: manipulation;
+}
+
+/* Install card */
+.install {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+}
+
+.install img {
+  border-radius: 10px;
+  flex: none;
+}
+
+.install p {
+  margin: 0.25rem 0 0.6rem;
+}
+
+/* Settings */
+.settings h1 {
+  margin: 0.75rem 0 1rem;
+}
+
+.back {
+  font-size: 0.9rem;
+}
+
+.settings-section {
+  margin-bottom: 1rem;
+}
+
+.settings-section .actions {
+  margin: 0.5rem 0 1rem;
+}
+
+.current {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.settings label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.settings select,
+.settings input[type="search"] {
+  width: 100%;
+  font: inherit;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.settings select:focus,
+.settings input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.status {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+.status.error {
+  color: var(--warn);
+}
+
+.results {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.results li {
+  margin-bottom: 0.35rem;
+}
+
+.result {
+  width: 100%;
+  text-align: start;
+  font: inherit;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.result:hover,
+.result:focus-visible {
+  border-color: var(--accent);
+}
+
+.about p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+footer a {
+  margin: 0 0.35rem;
+}
