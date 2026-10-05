@@ -24,6 +24,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+        env:
+          # Reminders API (azkar-guard-api). Empty hides the reminders setting.
+          VITE_API_URL: ${{ vars.AZKAR_API_URL }}
       - uses: actions/upload-artifact@v4
         with:
           name: dist

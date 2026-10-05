@@ -76,6 +76,18 @@ const en = {
   "install.dismiss": "Not now",
   "footer.extensions": "Also for your computer:",
   "footer.sources": "Sources:",
+  "reminders.title": "Reminders",
+  "reminders.body": "Get a notification when the morning or evening window opens, then every 30 minutes until you finish.",
+  "reminders.enable": "Turn on reminders",
+  "reminders.disable": "Turn off reminders",
+  "reminders.on": "Reminders are on for this device.",
+  "reminders.working": "One moment…",
+  "reminders.denied": "Notifications are blocked. Allow them for this site in your browser settings, then try again.",
+  "reminders.failed": "Could not turn on reminders: {error}",
+  "reminders.installFirst": "On iPhone and iPad, install the app first (Share → Add to Home Screen), then open it from the home screen to turn on reminders.",
+  "reminders.unavailable": "This browser doesn't support reminders.",
+  "reminders.needLocation": "Set your location first.",
+  "reminders.privacy": "Only the start and end times of your coming windows are sent to the reminder server, never your location.",
 };
 
 type Key = keyof typeof en;
@@ -155,6 +167,18 @@ const ar: Record<Key, string> = {
   "install.dismiss": "ليس الآن",
   "footer.extensions": "متاح أيضًا لجهازك:",
   "footer.sources": "المصادر:",
+  "reminders.title": "التذكير",
+  "reminders.body": "يصلك إشعار عند بداية وقت أذكار الصباح أو المساء، ثم كل 30 دقيقة حتى تُتمّها.",
+  "reminders.enable": "تفعيل التذكير",
+  "reminders.disable": "إيقاف التذكير",
+  "reminders.on": "التذكير مفعّل على هذا الجهاز.",
+  "reminders.working": "لحظة…",
+  "reminders.denied": "الإشعارات محظورة. اسمح بها لهذا الموقع من إعدادات المتصفح ثم حاول مرة أخرى.",
+  "reminders.failed": "تعذّر تفعيل التذكير: {error}",
+  "reminders.installFirst": "على iPhone و iPad: ثبّت التطبيق أولًا («مشاركة» ثم «إضافة إلى الشاشة الرئيسية»)، ثم افتحه من الشاشة الرئيسية لتفعيل التذكير.",
+  "reminders.unavailable": "هذا المتصفح لا يدعم التذكير.",
+  "reminders.needLocation": "حدّد موقعك أولًا.",
+  "reminders.privacy": "لا يُرسل إلى خادم التذكير إلا أوقات بداية ونهاية الأذكار القادمة، ولا يُرسل موقعك أبدًا.",
 };
 
 const DICTS: Record<Lang, Record<Key, string>> = { en, ar };

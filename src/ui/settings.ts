@@ -2,6 +2,7 @@ import { estimateMinutes, LEVELS } from "../lib/azkar";
 import { t, type I18nKey } from "../lib/i18n";
 import { allCities, locationFromTimeZone, nearestCity, searchCities, systemTimeZone, type City } from "../lib/locations";
 import { METHODS, methodForCountry } from "../lib/methods";
+import { disableReminders, enableReminders, pushSupport, remindersConfigured, remindersEnabled } from "../lib/push";
 import { getSettings, onChange, updateSettings } from "../lib/storage";
 import type { Lang, Location, Settings, TextSize, Theme } from "../lib/types";
 import { h } from "./dom";
@@ -33,10 +34,11 @@ export function mountSettings(root: HTMLElement): () => void {
   // Survives re-renders, so a settings change doesn't wipe what the user typed or the GPS status.
   let query = "";
   let gpsStatus: { key: I18nKey; vars?: Record<string, string>; error?: boolean } | null = null;
+  let reminderStatus: { key: I18nKey; vars?: Record<string, string>; error?: boolean } | null = null;
 
   const render = async () => {
     const settings = await getSettings();
-    root.replaceChildren(view(settings));
+    root.replaceChildren(view(settings, await remindersEnabled()));
   };
 
   const locateWithGps = () => {
@@ -126,6 +128,48 @@ export function mountSettings(root: HTMLElement): () => void {
     );
   };
 
+  const remindersSection = (settings: Settings, enabled: boolean): HTMLElement | false => {
+    if (!remindersConfigured) return false;
+    const lang = settings.language;
+    const support = pushSupport();
+    const note = (key: I18nKey, error = false) => h("p", { class: error ? "status error" : "status" }, t(lang, key));
+
+    let control: HTMLElement | false = false;
+    if (support === "install-first") control = note("reminders.installFirst");
+    else if (support === "unavailable") control = note("reminders.unavailable");
+    else if (!settings.location && !enabled) control = note("reminders.needLocation");
+    else {
+      const toggle = h("button", { type: "button", class: enabled ? "btn secondary" : "btn primary" }, t(lang, enabled ? "reminders.disable" : "reminders.enable"));
+      toggle.addEventListener("click", async () => {
+        toggle.setAttribute("disabled", "");
+        reminderStatus = { key: "reminders.working" };
+        toggle.textContent = t(lang, "reminders.working");
+        try {
+          if (enabled) {
+            await disableReminders();
+            reminderStatus = null;
+          } else {
+            reminderStatus = (await enableReminders()) ? { key: "reminders.on" } : { key: "reminders.denied", error: true };
+          }
+        } catch (err) {
+          reminderStatus = { key: "reminders.failed", vars: { error: err instanceof Error ? err.message : String(err) }, error: true };
+        }
+        void render();
+      });
+      control = h("div", { class: "actions" }, toggle);
+    }
+
+    return h(
+      "section",
+      { class: "panel settings-section" },
+      h("h2", {}, t(lang, "reminders.title")),
+      h("p", {}, t(lang, "reminders.body")),
+      control,
+      reminderStatus && h("p", { class: reminderStatus.error ? "status error" : "status" }, t(lang, reminderStatus.key, reminderStatus.vars)),
+      h("p", { class: "hint muted" }, t(lang, "reminders.privacy")),
+    );
+  };
+
   const select = <T extends string | number>(
     id: string,
     value: T,
@@ -144,7 +188,7 @@ export function mountSettings(root: HTMLElement): () => void {
   const field = (id: string, label: string, control: HTMLElement, hint?: string) =>
     h("div", { class: "field" }, h("label", { for: id }, label), control, hint && h("p", { class: "hint muted" }, hint));
 
-  const view = (settings: Settings): HTMLElement => {
+  const view = (settings: Settings, remindersOn: boolean): HTMLElement => {
     const lang = settings.language;
     const back = h("a", { href: "#/", class: "back" }, t(lang, "action.back"));
 
@@ -189,6 +233,7 @@ export function mountSettings(root: HTMLElement): () => void {
       back,
       h("h1", {}, t(lang, "settings.title")),
       locationSection(settings),
+      remindersSection(settings, remindersOn),
       h(
         "section",
         { class: "panel settings-section" },
@@ -220,7 +265,7 @@ export function mountSettings(root: HTMLElement): () => void {
   // Parse the city list ahead of the first search, without blocking the first paint.
   window.setTimeout(() => allCities(), 0);
 
-  const stop = onChange(["settings"], () => void render());
+  const stop = onChange(["settings", "push"], () => void render());
   void render();
   return stop;
 }

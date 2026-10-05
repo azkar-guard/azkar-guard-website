@@ -2,6 +2,7 @@ import { estimateMinutes, LEVELS } from "../lib/azkar";
 import { formatTime } from "../lib/dates";
 import { t } from "../lib/i18n";
 import { randomReminder } from "../lib/reminders";
+import { reportDone } from "../lib/push";
 import { getStatus, tap, type ActiveStatus, type Status } from "../lib/session";
 import { onChange, updateSettings } from "../lib/storage";
 import type { Dhikr, Lang, Level, Session } from "../lib/types";
@@ -73,6 +74,7 @@ export function mountChecklist(root: HTMLElement): () => void {
     try {
       const status = await tap(id);
       celebrate = status.state === "active" && status.complete;
+      if (status.state === "active" && celebrate) void reportDone(windowKey(status.window));
       if (celebrate) quietUntil = Date.now() + 3000;
       await render(status);
       celebrate = false;

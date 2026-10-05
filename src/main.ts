@@ -1,5 +1,7 @@
 import "./ui/base.css";
 import "./ui/app.css";
+import { syncReminders } from "./lib/push";
+import { onChange } from "./lib/storage";
 import { mountChecklist } from "./ui/checklist";
 import { mountInstall } from "./ui/install";
 import { mountToolbar } from "./ui/prefs";
@@ -23,7 +25,11 @@ mountToolbar(document.getElementById("toolbar")!);
 mountInstall(document.getElementById("install")!);
 route();
 
-// The service worker makes the app work offline. It is only built for production.
+// The service worker makes the app work offline and shows reminders. It is only built for production.
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   void navigator.serviceWorker.register("/sw.js");
 }
+
+// Keep the reminder schedule current: the windows move with the calendar, the location and the method.
+void syncReminders();
+onChange(["settings"], () => void syncReminders());

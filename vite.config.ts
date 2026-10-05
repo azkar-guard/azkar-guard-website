@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 
 const root = import.meta.dirname;
 
@@ -58,17 +58,79 @@ self.addEventListener("fetch", (event) => {
   const key = request.mode === "navigate" ? "/" : request;
   event.respondWith(caches.match(key).then((hit) => hit ?? fetch(request)));
 });
+
+// Reminders from azkar-guard-api. The payload is { session, key, lang }; the text lives here.
+const TEXT = {
+  en: {
+    morning: "Morning Azkar not finished yet",
+    evening: "Evening Azkar not finished yet",
+    bodies: [
+      "Tap to open your checklist.",
+      "It takes only a few minutes… and the Azkar are the Muslim's fortress.",
+      "“Remember Me; I will remember you.” (2:152)",
+    ],
+  },
+  ar: {
+    morning: "لم تُتمّ أذكار الصباح بعد",
+    evening: "لم تُتمّ أذكار المساء بعد",
+    bodies: [
+      "اضغط لفتح الأذكار.",
+      "لن تأخذ إلا دقائق… والأذكار حصن المسلم.",
+      "«فَاذْكُرُونِي أَذْكُرْكُمْ»",
+    ],
+  },
+};
+
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {}
+  const text = TEXT[data.lang === "ar" ? "ar" : "en"];
+  // Vary the body each half hour so repeated reminders don't all look the same.
+  const body = text.bodies[Math.floor(Date.now() / 1800000) % text.bodies.length];
+  event.waitUntil(
+    self.registration.showNotification(data.session === "evening" ? text.evening : text.morning, {
+      body,
+      icon: "/icons/icon-192.png",
+      tag: data.key || "azkar-guard",
+      renotify: true,
+      lang: data.lang === "ar" ? "ar" : "en",
+      dir: data.lang === "ar" ? "rtl" : "ltr",
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((windows) => {
+      const open = windows.find((w) => new URL(w.url).origin === self.location.origin);
+      if (open) return open.focus();
+      return self.clients.openWindow("/");
+    }),
+  );
+});
 `;
       this.emitFile({ type: "asset", fileName: "sw.js", source });
     },
   };
 }
 
-export default defineConfig({
-  plugins: [serviceWorker()],
+/** Lets the page call the reminders API: adds its origin to the CSP's connect-src. */
+function apiCsp(apiUrl: string | undefined): Plugin {
+  const origin = apiUrl ? new URL(apiUrl).origin : "";
+  return {
+    name: "azkar-guard-api-csp",
+    transformIndexHtml: (html) => html.replace("connect-src 'self'", `connect-src 'self'${origin ? ` ${origin}` : ""}`),
+  };
+}
+
+export default defineConfig(({ mode }) => ({
+  plugins: [serviceWorker(), apiCsp(loadEnv(mode, root).VITE_API_URL)],
   build: {
     outDir: "dist",
     emptyOutDir: true,
     target: "es2022",
   },
-});
+}));

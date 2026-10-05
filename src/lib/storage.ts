@@ -5,6 +5,8 @@ interface Store {
   settings: Settings;
   progress: Progress;
   history: History;
+  /** Push reminders registration with azkar-guard-api; null when reminders are off. */
+  push: { id: string } | null;
 }
 
 export type StoreKey = keyof Store;
