@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'" />
+    <title>Azkar Guard — حارس الأذكار</title>
+    <meta name="description" content="Keeps reminding you until your morning and evening Azkar are done. Free, offline, no ads." />
+    <meta name="theme-color" content="#0f5132" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icons/icon-32.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Azkar Guard" />
+    <meta name="mobile-web-app-capable" content="yes" />
+  </head>
+  <body>
+    <div class="page">
+      <nav>
+        <a class="brand" href="#/"><img src="/icons/icon-32.png" alt="" width="24" height="24" /><span data-i18n="brand.name">Azkar Guard</span></a>
+        <div class="nav-actions">
+          <div class="toolbar" id="toolbar"></div>
+          <a href="#/settings" id="open-settings" data-i18n="action.settings">Settings</a>
+        </div>
+      </nav>
+      <div id="install"></div>
+      <main id="app"></main>
+      <footer>
+        <p>
+          <span data-i18n="footer.sources">Sources:</span>
+          <a href="https://www.hisnmuslim.com" target="_blank" rel="noopener">Hisn al-Muslim</a>
+          <a href="https://tanzil.net" target="_blank" rel="noopener">Tanzil</a>
+          <a href="#/settings" data-i18n="settings.about">About and sources</a>
+        </p>
+        <span data-i18n="footer.extensions">Also for your computer:</span>
+        <a href="https://chromewebstore.google.com/detail/pphgcabpchgmnmpfchhgjcckdgmcjnic" target="_blank" rel="noopener">Chrome</a>
+        <a href="https://marketplace.visualstudio.com/items?itemName=s403o.azkar-guard-vscode" target="_blank" rel="noopener">VS Code</a>
+        <a href="https://open-vsx.org/extension/azkar-guard/azkar-guard-vscode" target="_blank" rel="noopener">Open VSX</a>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
