@@ -19,7 +19,6 @@ Prayer times are calculated **on the device** with [adhan-js](https://github.com
 - **Install card:** Chrome's install prompt on Android and desktop; Share → Add to Home Screen instructions on iPhone and iPad.
 - **Offline:** a service worker precaches every built file, so after the first visit the app opens without a connection.
 - **Arabic and English**, light and dark themes, three text sizes.
-
 - **Reminders (opt-in):** a notification when the morning or evening window opens, then every 30 minutes until the session is done.
   - Browsers can't schedule notifications themselves, so [azkar-guard-api](https://github.com/azkar-guard/azkar-guard-api), a Cloudflare Worker, sends them as web push.
   - The app uploads only the next week of window times (never the location), re-sends them whenever it opens or the location, method or language changes, and reports each completed session so the reminders stop.
