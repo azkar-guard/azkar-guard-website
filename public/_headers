@@ -1,0 +1,11 @@
+# Cloudflare Pages response headers.
+# The service worker must always be re-fetched, or users keep an old app version.
+/sw.js
+  Cache-Control: no-cache
+# Hashed build files never change.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: geolocation=(self), camera=(), microphone=()
